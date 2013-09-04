@@ -39,6 +39,12 @@ setupApi = ->
   # Print the content of the snippetTree in a readable string
   @printTree = $.proxy(document, 'printTree')
 
+  # Return the value of a specific snippet.
+  # e.g. doc.collectValues("title", "hero") to get values ["titlevalue", "herovalue"]
+  # @param identifier: (...String) snippet identifier e.g. "bootstrap.title"
+  # @return first EditableValue of each snippet in params
+  @collectValues = $.proxy(document, 'collectValues')
+
   @eachContainer = chainable(document, 'eachContainer')
   @document = document
 

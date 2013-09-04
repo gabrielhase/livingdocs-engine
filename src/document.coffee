@@ -124,6 +124,37 @@ document = do ->
     json
 
 
+  findSnippet: (snippetId, json) ->
+    traverseTree = (snippet) ->
+      for key, container of snippet.containers
+        for childSnippet in container
+          if childSnippet.identifier.indexOf(snippetId) != -1
+            return childSnippet
+
+          snippet = traverseTree(childSnippet)
+          return snippet if snippet
+
+    if !json
+      json = @snippetTree.toJson()
+
+    for snippet in json.content
+      if snippet.identifier.indexOf(snippetId) != -1
+        return snippet
+
+      snippet = traverseTree(snippet)
+      return snippet if snippet
+
+
+  collectValues: ->
+    json = @snippetTree.toJson()
+    output = []
+    for argument in arguments
+      snippet = @findSnippet argument, json
+      output.push snippet?.editables?[Object.keys(snippet.editables)[0]]
+
+    output
+
+
   restore: (contentJson, resetFirst = true) ->
     @reset() if resetFirst
     @snippetTree.fromJson(contentJson, @design)
