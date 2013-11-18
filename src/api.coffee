@@ -39,6 +39,8 @@ setupApi = ->
   @toHtml = $.proxy(document, 'toHtml')
   @readableJson = -> words.readableJson( document.toJson() )
 
+  @snippetFromJson = $.proxy(SnippetModel, 'fromJson')
+
   # Print the content of the snippetTree in a readable string
   @printTree = $.proxy(document, 'printTree')
 

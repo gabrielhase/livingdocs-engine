@@ -164,13 +164,6 @@ class SnippetModel
     json.id = guid.next()
     SnippetModel.fromJson(json, design)
 
-    #log.warn("SnippetModel#copy() is not implemented yet.")
-
-    # serializing/deserializing should work but needs to get some tests first
-    # json = @toJson()
-    # json.id = guid.next()
-    # SnippetModel.fromJson(json)
-
 
   copyWithoutContent: ->
     @template.createModel()
