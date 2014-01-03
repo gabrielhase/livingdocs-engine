@@ -19,6 +19,10 @@ stash = do ->
     document.reset()
 
 
+  clear: ->
+    @store.clear()
+
+
   delete: ->
     @store.pop()
 

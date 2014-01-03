@@ -57,6 +57,7 @@ setupApi = ->
   @stash = $.proxy(stash, 'stash')
   @stash.snapshot = $.proxy(stash, 'snapshot')
   @stash.delete = $.proxy(stash, 'delete')
+  @stash.clear = $.proxy(stash, 'clear')
   @stash.restore = $.proxy(stash, 'restore')
   @stash.get = $.proxy(stash, 'get')
   @stash.list = $.proxy(stash, 'list')
