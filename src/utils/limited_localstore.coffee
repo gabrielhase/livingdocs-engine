@@ -12,28 +12,58 @@ class LimitedLocalstore
     @index = undefined
 
 
+  compress: (obj) ->
+    if typeof obj == 'object'
+      str = JSON.stringify(obj)
+    else
+      str = obj
+    compressedString = LZString.compress(str)
+    compressedString
+
+
+  decompress: (obj) ->
+    str = LZString.decompress(obj)
+    try
+      res = JSON.parse(str)
+    catch e
+      res = str
+    res
+
+
   push: (obj) ->
     reference =
       key: @nextKey()
       date: Date.now()
 
     index = @getIndex()
-    index.push(reference)
-
-    while index.length > @limit
+    while index.length + 1 > @limit
       removeRef = index[0]
       index.splice(0, 1)
       localstore.remove(removeRef.key)
 
-    localstore.set(reference.key, obj)
-    localstore.set("#{ @key }--index", index)
+    try
+      localstore.set(reference.key, @compress(obj))
+      # update index when entering worked
+      index.push(reference)
+      localstore.set("#{ @key }--index", index)
+    catch e
+      if index.length > 1 # leave at least one revision
+        removeRef = index[0]
+        index.splice(0, 1)
+        localstore.remove(removeRef.key)
+        return @push(obj) # try again
+      else
+        log 'The document is too large to be stored in localstorage'
+        return false # failure
+
+    return true # success
 
 
   pop: ->
     index = @getIndex()
     if index && index.length
       reference = index.pop()
-      value = localstore.get(reference.key)
+      value = @decompress(localstore.get(reference.key))
       localstore.remove(reference.key)
       @setIndex()
       value
@@ -46,7 +76,7 @@ class LimitedLocalstore
     if index && index.length
       num ||= index.length - 1
       reference = index[num]
-      value = localstore.get(reference.key)
+      value = @decompress(localstore.get(reference.key))
     else
       undefined
 

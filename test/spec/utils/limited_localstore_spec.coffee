@@ -20,25 +20,41 @@ describe 'LimitedLocalstore', ->
     @store = new LimitedLocalstore('test-store', 3)
 
 
-  it 'saves one item', ->
+  it 'saves one string item', ->
     @store.push('first')
     expect(@store.getIndex().length).toEqual(1)
     expect(@store.get()).toEqual('first')
 
 
-  it 'saves a second item', ->
-    @store.push('second')
+  it 'saves a second json item', ->
+    @store.push
+      someField: 'someVal'
+      someNestedField:
+        nestedContent: 'nestedVal'
     expect(@store.getIndex().length).toEqual(2)
-    expect(@store.get()).toEqual('second')
+    expect(@store.get()).toEqual
+      someField: 'someVal'
+      someNestedField:
+        nestedContent: 'nestedVal'
 
 
-  it 'removes the second item', ->
-    expect(@store.pop()).toEqual('second')
+
+  # it 'saves a second item', ->
+  #   @store.push('second')
+  #   expect(@store.getIndex().length).toEqual(2)
+  #   expect(@store.get()).toEqual('second')
+
+
+  it 'removes the second json item', ->
+    expect(@store.pop()).toEqual
+      someField: 'someVal'
+      someNestedField:
+        nestedContent: 'nestedVal'
     expect(@store.getIndex().length).toEqual(1)
     expect(@store.get()).toEqual('first')
 
 
-  it 'removes the first item', ->
+  it 'removes the first string item', ->
     expect(@store.pop()).toEqual('first')
     expect(@store.getIndex().length).toEqual(0)
     expect(@store.get()).toBeUndefined()

@@ -23,6 +23,7 @@ files = [
   'vendor/yepnope/yepnope.1.5.3-min.js',
   'vendor/store/store.js',
   'vendor/editableJS/editable.js',
+  'vendor/lz-string/lz-string-1.3.3.js',
 
   // source files
   '.tmp/livingdocs_engine_test.js',
