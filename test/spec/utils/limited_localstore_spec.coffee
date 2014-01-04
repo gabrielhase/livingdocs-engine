@@ -18,6 +18,10 @@ describe 'LimitedLocalstore', ->
 
   beforeEach ->
     @store = new LimitedLocalstore('test-store', 3)
+    @json =
+      someField: 'someVal'
+      someNestedField:
+        nestedContent: 'nestedVal'
 
 
   it 'saves one string item', ->
@@ -27,29 +31,33 @@ describe 'LimitedLocalstore', ->
 
 
   it 'saves a second json item', ->
-    @store.push
-      someField: 'someVal'
-      someNestedField:
-        nestedContent: 'nestedVal'
+    @store.push(@json)
     expect(@store.getIndex().length).toEqual(2)
-    expect(@store.get()).toEqual
-      someField: 'someVal'
-      someNestedField:
-        nestedContent: 'nestedVal'
+    expect(@store.get()).toEqual(@json)
 
 
-
-  # it 'saves a second item', ->
-  #   @store.push('second')
-  #   expect(@store.getIndex().length).toEqual(2)
-  #   expect(@store.get()).toEqual('second')
+  it 'did not overwrite the first item', ->
+    expect(@store.get(0)).toEqual('first')
 
 
-  it 'removes the second json item', ->
+  it 'saves a third json item as a variant of the second', ->
+    @json.someNestedField.nestedContent = 'modifiedNestedVal'
+    @store.push(@json)
+    expect(@store.getIndex().length).toEqual(3)
+    expect(@store.get()).toEqual(@json)
+
+
+  it 'removes the third json item', ->
     expect(@store.pop()).toEqual
       someField: 'someVal'
       someNestedField:
-        nestedContent: 'nestedVal'
+        nestedContent: 'modifiedNestedVal'
+    expect(@store.getIndex().length).toEqual(2)
+    expect(@store.get()).toEqual(@json)
+
+
+  it 'removes the second json item', ->
+    expect(@store.pop()).toEqual(@json)
     expect(@store.getIndex().length).toEqual(1)
     expect(@store.get()).toEqual('first')
 

@@ -74,7 +74,7 @@ class LimitedLocalstore
   get: (num) ->
     index = @getIndex()
     if index && index.length
-      num ||= index.length - 1
+      num ?= index.length - 1
       reference = index[num]
       value = @decompress(localstore.get(reference.key))
     else
