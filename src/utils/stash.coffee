@@ -31,6 +31,13 @@ stash = do ->
     @store.get()
 
 
+  getAll: ->
+    allEntries = []
+    for i in [0..@store.getIndex().length - 1]
+      allEntries.push(@store.get(i))
+    allEntries
+
+
   restore: ->
     json = @store.get()
 
